@@ -1,6 +1,8 @@
 # Instagram Data Analysis 
 
 ## Instagram clone data 
+
+-[MySQL simulation data code]
 ``` sql
 DROP DATABASE IF EXISTS ig_clone;
 CREATE DATABASE ig_clone;
