@@ -2,7 +2,7 @@
 
 ## Instagram clone data 
 
-- [MySQL intagram data code](#mysql-simulation-data-code)
+- [MySQL Intagram data code](#mysql-simulation-data-code)
 ``` sql
 DROP DATABASE IF EXISTS ig_clone;
 CREATE DATABASE ig_clone;
