@@ -74,34 +74,25 @@ INSERT INTO photo_tags(photo_id, tag_id) VALUES (1, 18), (1, 17), (1, 21), (1, 1
 ```
 - [MySQL Analysis Codes](#mysql-analysis-codes)
 ``` sql
--- challenge 1
--- question : reward five oldest users;
-select * from users order by created_at limit 5; 
+-- Question 1. Reward five oldest users;
 
---- challenge 2;
--- question: what day of the week do most users register on;
-select dayname(created_at), count(dayname(created_at)) as register from users
-group by dayname(created_at) order by register desc;
+SELECT * FROM users ORDER BY created_at LIMIT 5; 
 
-select dayname(created_at), count(*) as register from users
-group by dayname(created_at) order by register desc;
+-- Question 2. What day of the week do most users register on;
 
---- challenge 3. question: locate inactive users; 
-
-select username, ifnull(image_url, 'none') as status, case 
-when image_url is null then 'inactive'
-else 'active'
-end as activity from users 
-left join photos on photos.user_id=users.id where image_url is null;
-
---- video solution;
-SELECT username
+SELECT DAYNAME(created_at), COUNT(DAYNAME(created_at)) AS register
 FROM users
-LEFT JOIN photos
-    ON users.id = photos.user_id
-WHERE photos.id IS NULL;
+GROUP BY DAYNAME(created_at) ORDER BY register desc;
 
---- challenge 4. question: who get the most likes in a single photo; 
+-- Question 3. Locate inactive users; 
+
+SELECT username, IFNULL(image_url, 'none') AS status,
+CASE WHEN image_url IS NULL THEN 'inactive'
+ELSE 'active'
+END AS activity FROM users 
+LEFT JOIN photos ON photos.user_id=users.id WHERE image_url IS NULL;
+
+-- Question 4. Who got the most likes in a single photo; 
 
 SELECT 
     username,
@@ -117,20 +108,13 @@ GROUP BY photos.id
 ORDER BY total DESC
 LIMIT 1;
 
-
---- challenge 5. question: how many time averge users post;
+--- Question 5. How many time averge users post;
 
 SELECT (SELECT Count(*) 
         FROM   photos) / (SELECT Count(*) 
                           FROM   users) AS avg; 
                           
---- challenge 6. question: which hashtag to use what are the top 5 most used tags;
-
-select tag_name, count(*) from tags
-join photo_tags on tags.id=photo_tags.tag_id
-group by tag_name order by count(*) desc limit 5; 
-
---- code from video;
+-- Question 6. Which hashtag to use what are the top 5 most used tags;
 
 SELECT tags.tag_name, 
        Count(*) AS total 
@@ -141,11 +125,7 @@ GROUP  BY tags.id
 ORDER  BY total DESC 
 LIMIT  5;
 
---- challenge 7. question: bots users who liked evey single photo;
-
-select likes.user_id, users.username, count(*) from likes
-join users on users.id=likes.user_id
-group by username having count(*)=(select count(*) from photos);
+-- Question 7. Bots users who liked evey single photo;
 
 SELECT username, 
        Count(*) AS num_likes 
