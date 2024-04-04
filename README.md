@@ -135,4 +135,45 @@ FROM   users
 GROUP  BY likes.user_id 
 HAVING num_likes = (SELECT Count(*) 
                     FROM   photos); 
-```
+-- Question 8: Find the total number of comments for each user;
+
+SELECT
+    users.id AS user_id,
+    users.username,
+    COUNT(comments.id) AS total_comments
+FROM
+    users
+LEFT JOIN
+    comments ON users.id = comments.user_id
+GROUP BY
+    users.id, users.username
+ORDER BY
+    total_comments DESC;
+  
+-- Question 9: Rank users based on the total number of likes they've received;
+
+SELECT
+    l.user_id,
+    u.username,
+    COUNT(*) AS total_likes,
+    RANK() OVER (ORDER BY COUNT(*) DESC) AS like_rank
+FROM
+    likes l
+JOIN
+    users u ON l.user_id = u.id
+GROUP BY
+    l.user_id, u.username
+ORDER BY
+    total_likes DESC;
+
+-- Question 10:Find users who have liked photos posted by their followers;
+
+WITH UserFollowers AS (
+    SELECT DISTINCT follower_id, followee_id
+    FROM follow
+)
+SELECT DISTINCT uf.follower_id, u.username
+FROM UserFollowers uf
+JOIN likes l ON uf.follower_id = l.user_id
+JOIN users u ON uf.follower_id = u.id;
+
