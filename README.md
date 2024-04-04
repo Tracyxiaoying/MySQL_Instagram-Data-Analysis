@@ -1,6 +1,6 @@
-# Instagram Data Analysis 
+# Instagram Simulated Data Analysis 
 
-## Instagram clone data 
+## Instagram data 
 
 - [MySQL Intagram data code](#mysql-simulation-data-code)
 ``` sql
