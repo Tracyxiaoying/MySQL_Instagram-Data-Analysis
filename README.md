@@ -177,3 +177,42 @@ FROM UserFollowers uf
 JOIN likes l ON uf.follower_id = l.user_id
 JOIN users u ON uf.follower_id = u.id;
 
+
+-- Create triggers to validate inputs
+-- Change delimiter to @@
+delimiter @@
+
+-- Trigger to check if follower and followee are the same before inserting into follow table
+CREATE TRIGGER follow_valid
+BEFORE INSERT ON follow FOR EACH ROW
+BEGIN
+    IF NEW.follower_id = NEW.followee_id THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Follower and followee must be different';
+    END IF;
+END @@
+
+-- Change delimiter back to ;
+delimiter ;
+
+-- Create the unfollows table
+CREATE TABLE unfollows (
+    follower_id INTEGER NOT NULL,
+    followee_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(follower_id) REFERENCES users(id),
+    FOREIGN KEY(followee_id) REFERENCES users(id),
+    PRIMARY KEY(follower_id, followee_id)
+);
+
+-- Change delimiter back to @@
+delimiter @@
+
+-- Trigger to capture instances where a follow relationship is deleted from the 'follow' table.
+-- Inserts the unfollowed relationship into the 'unfollows' table.
+CREATE TRIGGER capture_nolonger_follows
+AFTER DELETE ON follow FOR EACH ROW
+BEGIN
+    -- Inserting the unfollowed relationship into the 'unfollows' table
+    INSERT INTO unfollows (follower_id, followee_id)
+    VALUES (OLD.follower_id, OLD.followee_id);
+END @@
