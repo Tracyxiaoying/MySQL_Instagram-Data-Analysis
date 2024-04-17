@@ -180,6 +180,7 @@ JOIN users u ON uf.follower_id = u.id;
 
 -- Create triggers to validate inputs
 -- Change delimiter to @@
+
 delimiter @@
 
 -- Trigger to check if follower and followee are the same before inserting into follow table
@@ -192,6 +193,7 @@ BEGIN
 END @@
 
 -- Change delimiter back to ;
+
 delimiter ;
 
 -- Create the unfollows table
@@ -205,6 +207,7 @@ CREATE TABLE unfollows (
 );
 
 -- Change delimiter back to @@
+
 delimiter @@
 
 -- Trigger to capture instances where a follow relationship is deleted from the 'follow' table.
